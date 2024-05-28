@@ -1,44 +1,50 @@
-export default class Elem{
-
-    //privát adattagok létrehozása:
-    #allapot=true;
-    #divElem;
-    #id=0;
-    constructor(id, allapot, szuloElem){
-        //this mindig a konkrét objektumpéldányra mutat az EGO
-        this.#allapot=allapot;
-        this.#szuloElem=szuloElem;
-        this.#id=id;
-
-        /* 
-        this.#divElem = this.#szuloElem.children("div:last-child");
-        this.#divElem.on("click", ()=>{
-            console.log(this.#id);
-            if(this.#allapot==false){
-                this.#kattintasTrigger("lepes");
-            }
-        }) */
+export default class Lampa {
+    #allapot; /* boolean, ég a lámpa, vagay nem */
+    #id; /* a lápa sorszáma */
+    #divElem; /* html elem, ez jeleníti meg a lámpát */
+    #szuloElem;
+  
+    constructor(id, allapot, divElem, szuloElem) {
+      this.#id = id;
+      this.#allapot = allapot;
+      this.#szuloElem = szuloElem;
+      this.#divElem = divElem;
+  
+      this.#megjelenit();
+      /* HA RÁKATTINTUNK AZ ELEMRE */
+      this.#divElem = this.#szuloElem.children("div:last-child");
+      this.#divElem.on("click", () => {
+        this.#kattintasTrigger("kapcsolas");
+        console.log(this.#id);
+      });
     }
-    setAllapot(){
-
+  
+    #megjelenit() {
+      let txt = `<div><p>${this.#allapot}</p></div>`;
+      this.#szuloElem.append(txt);
     }
-    #szinBeallit(){
-
+  
+    setAllapot() {
+      /* a lápa állapotát az ellenkezőre váltja, meghívja a szinBeallit metódust */
+      if (this.#allapot == true) {
+        this.#szinBeallit();
+        this.#allapot = false;
+      } else {
+        this.#szinBeallit();
+        this.#allapot = true;
+      }
     }
-    #kattintasTrigger(){
-        const e= new CustomEvent(kapcsolas, {detail:this.#id})
-        window.dispatchEvent(e)
+  
+    #szinBeallit() {
+      if (this.#allapot == true) {
+        this.#divElem.addClass("sarga");
+      } else {
+        this.#divElem.addClass("fekete");
+      }
     }
-    /* //EGy osztályban a this a konkrét objektumpéldányt jelenti, de egy eseménykezelőben function névtelen függvénnyel használva azt a html elemet jelenti, amelyik az eseményt kiváltotta(mint az event.target), nyílfüggvénnyel használva pedig, az objektumpéldányra mutat
-    #megjelenit(){
-        let txt=`<div><h1>${this.#ertek}</h1></div>`;
-        this.#szuloElem.append(txt)
-    } */
-
-/*     //információ átadás esemény esetén másik osztálynak
-    #esemenyTrigger(esemenyNev){
-        //létrehoz saját eseményt eseményNév néven, és átad adatokat saját magáról {detail: }
-        const e= new CustomEvent(esemenyNev, {detail:this.#id})
-        window.dispatchEvent(e)
-    } */
-}
+  
+    #kattintasTrigger(esemenyNev) {
+      const e = new CustomEvent(esemenyNev, { detail: this.#id });
+      window.dispatchEvent(e);
+    }
+  }

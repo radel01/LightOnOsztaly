@@ -1,3 +1,3 @@
 import JatekTer from "./Jatekter.js";
 
-new JatekTer();
+const jatek = new JatekTer()
