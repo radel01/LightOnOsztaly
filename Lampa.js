@@ -8,7 +8,6 @@ export default class Lampa {
       this.#id = id;
       this.#allapot = allapot;
       this.#szuloElem = szuloElem;
-      this.#divElem = divElem;
   
       this.#megjelenit();
       /* HA RÁKATTINTUNK AZ ELEMRE */
@@ -20,7 +19,7 @@ export default class Lampa {
     }
   
     #megjelenit() {
-      let txt = `<div><p>${this.#allapot}</p></div>`;
+      let txt = `<div></div>`;
       this.#szuloElem.append(txt);
     }
   

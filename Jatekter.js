@@ -3,17 +3,19 @@ import Lampa from "./Lampa.js";
 export default class JatekTer {
   #db = 0; /* felkapcsolt lámpák száma */
   #allapotLista = []; /* melyik lámpa ég, melyik nem */
-  #meret=5; /* játék mérete tábla = méret*méret */
+  #meret; /* játék mérete tábla = méret*méret */
   #lepes = 0; /* ennyi lépésben sikerült lekapcsolni az összes lámpát */
 
   constructor() {
+    this.#meret=this.#setMeret();
     this.#setAllapotLista();
     this.#megjelenit();
 
-    $(window).on("kapcsol", (event) => {
-    console.log(event.detail);
-    let id = event.detail;
-    this.#szomszedokKeresese(id);
+    $(window).on("kapcsolas", (event) => {
+      console.log(event.detail);
+      let id = event.detail;
+      this.#szomszedokKeresese(id);
+      //this.lampa.#setAllapot();
     });
 }
 
@@ -27,16 +29,18 @@ export default class JatekTer {
   });
 
 }
-
+#setMeret(){
+  let NINPUTELEM = $(".meret");
+  let N=5;
+    NINPUTELEM.on("change", function () {
+      N = NINPUTELEM.val();
+      let inputMeret = $(":root");
+      inputMeret.css("--meret", N);
+    });
+    return N;
+}
 #setAllapotLista() {
     /* beállítja a lista értékeit véletlenszerűen true/false, hossza méret*méret */
-    let NINPUTELEM = $(".meret");
-    NINPUTELEM.on("change", function () {
-      let N = NINPUTELEM.val();
-      let meret = $(":root");
-      meret.css("--meret", N);
-      this.meret=meret
-    });
     this.#allapotLista = new Array(this.#meret * this.#meret);
     for (let index = 0; index < this.#allapotLista.length; index++) {
       let szam = Math.floor(Math.random() * 2);
@@ -51,25 +55,25 @@ export default class JatekTer {
   
 
   #szomszedokKeresese(id) {
-    const elotteN = this.#allapotLista[id] - this.#meret;
-    const elotte1 = this.#allapotLista[id] - 1;
-    const utanaN = this.#allapotLista[id] + this.#meret;
-    const utana1 = this.#allapotLista[id] + 1;
+    const elotteN = id - this.#meret;
+    const elotte1 = id - 1;
+    const utanaN = Number(id) + Number(this.#meret);
+    const utana1 = Number(id) + 1;
     /* megkeresi az aktuális elem szomoszédait, és megváltoztatja az állapotukat*/
-    
-    this.#allapotLista[elotte1].setAllapot();
-    this.#allapotLista[elotteN].setAllapot();
-    this.#allapotLista[utana1].setAllapot();
-    this.#allapotLista[utanaN].setAllapot();
-  console.log("szomszedgenyo");
-  this.#megjelenit();
-}
-
-  #init() {
-    /* új játékteret hoz létre, alapértékre állítja az adattagokat, új játék */
+    if (id % 5 == 5) {
+      this.#allapotLista[elotte1] = !this.#allapotLista[elotte1];
+      this.#allapotLista[elotteN] = !this.#allapotLista[elotteN];
+      this.#allapotLista[utanaN] = !this.#allapotLista[utanaN];
+      this.#allapotLista[id] = !this.#allapotLista[id];
+    }
+    this.#allapotLista[elotte1] = !this.#allapotLista[elotte1];
+    this.#allapotLista[elotteN] = !this.#allapotLista[elotteN];
+    this.#allapotLista[utana1] = !this.#allapotLista[utana1];
+    this.#allapotLista[utanaN] = !this.#allapotLista[utanaN];
+    this.#allapotLista[id] = !this.#allapotLista[id];
+    console.log(this.#allapotLista);
+    console.log(id, utana1, utanaN);
+    this.#megjelenit();
   }
 
-  #ellenorzes() {
-    /* int, megnézi, hogy hány lámpa ég még */
-  }
 }
